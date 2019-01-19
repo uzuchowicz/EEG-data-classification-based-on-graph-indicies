@@ -47,11 +47,13 @@ class plvDataImport:
     def import_data_from_xslx(self, filename=None, dirpath=None):
 
         filepath = self.import_filepath(filename=filename, dirpath=dirpath)
-        excel_data = pd.read_excel(os.path.join(filepath), skiprows=0)
-        self.data = np.matrix(excel_data)
+        excel_data = pd.read_excel(os.path.join(filepath))
+        # excel_data = pd.read_excel(os.path.join(filepath), skiprows=0)
+        # self.data = np.matrix(excel_data)
+        self.data = excel_data
         print("Importing data of size {0}".format(np.shape(self.data)))
 
-        return self.data
+        return excel_data
 
     def get_labels(self, factor_idx, filename = None, dirpath=None):
         filepath = self.import_filepath(filename=filename, dirpath=dirpath)
