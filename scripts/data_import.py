@@ -20,7 +20,8 @@ from consts import indiciesList
 # import functions as fct
 # import plotting as plot
 import os as os
-
+import sys as sys
+import logging
 
 class plvDataImport:
     def __init__(self):
@@ -47,17 +48,34 @@ class plvDataImport:
     def import_data_from_xslx(self, filename=None, dirpath=None):
 
         filepath = self.import_filepath(filename=filename, dirpath=dirpath)
-        excel_data = pd.read_excel(os.path.join(filepath))
-        # excel_data = pd.read_excel(os.path.join(filepath), skiprows=0)
-        # self.data = np.matrix(excel_data)
-        self.data = excel_data
-        print("Importing data of size {0}".format(np.shape(self.data)))
+        try:
+            excel_data = pd.read_excel(os.path.join(filepath))
+            # excel_data = pd.read_excel(os.path.join(filepath), skiprows=0)
+            # self.data = np.matrix(excel_data)
+            self.data = excel_data
+            print("Importing data of size {0}".format(np.shape(self.data)))
+
+        except IOError:
+            print("Error: can\'t find file or read data")
+            sys.exit(1)
+        except Exception as e:
+            print("Unable to open file...")
+            logging.exception(e)
+            sys.exit(1)
 
         return excel_data
 
     def get_labels(self, factor_idx, filename = None, dirpath=None):
         filepath = self.import_filepath(filename=filename, dirpath=dirpath)
-        labels = pd.read_excel(os.path.join(filepath), header=0)
+        try:
+            labels = pd.read_excel(os.path.join(filepath), header=0)
+        except IOError:
+            print("Error: can\'t find file or read data")
+            sys.exit(1)
+        except Exception as e:
+            print("Unable to open file...")
+            logging.exception(e)
+            sys.exit(1)
         labels = tuple(labels)
         factor_labels = labels[:factor_idx]
         independent_labels = labels[factor_idx:]

@@ -19,10 +19,13 @@ def main():
     print(param_name)
     if param_name in independent_labels:
         param_idx = + independent_labels.index(param_name)
+    #all_data = all_data[all_data["group"] == 3]
+
     param_data = all_data[param_name].values
+    #data_response_MDD =param_data[param_data["group"] == 1]
     is_normal = distributionAnalysis().test_normality(param_data)
-    varianceAnalysis().variance_test(param_data, is_normal)
-    print(param_data)
+    varianceAnalysis().variance_test(is_normal, all_data, param_name, "band", "group", "condition")
+
 
 
 
