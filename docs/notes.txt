@@ -1,3 +1,2 @@
  The Shapiro-Wilk normality test was used to evaluate whether continuous variables exhibited a normal distribution. Parametric analysis was applied to normal data, whereas nonparametric analysis was applied to non-normal data. A one-way, three factors (mixed design) analysis of variance (ANOVA) was performed using the factors: Group, Band, Condition, Session, Channel
 
-  

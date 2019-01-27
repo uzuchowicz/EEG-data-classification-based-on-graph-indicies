@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class indiciesList(Enum):
+class IndiciesList(Enum):
     STRENGTH = 'strength'
     DENSITY = 'density'
     CPL = "characteristic_path_length"
@@ -19,5 +19,5 @@ class indiciesList(Enum):
     ILR = "ILR"
 
 
-class plvTresholdAnova2Data:
-    FACTOR_IDX = 7
+class PlvThresholdAnova2Data:
+    FACTOR_IDX = 8

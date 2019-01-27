@@ -3,27 +3,28 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import spm1d as spm
 
-class varianceAnalysis():
+
+class VarianceAnalysis:
     def __init__(self):
         self.is_normal = False
 
     def variance_test(self, is_normal, data, param, factor, factor2, factor3):
 
         if is_normal:
-            varianceAnalysis.anova_test(data, param, factor, factor2, factor3)
+            VarianceAnalysis.anova_test(data, param, factor, factor2, factor3)
         else:
-            varianceAnalysis.wk_anova_test(data, param, factor, factor2, factor3)
+            VarianceAnalysis.wk_anova_test(data, param, factor, factor2, factor3)
         return True
 
 
     @staticmethod
     def anova_test(data, param, factor, factor2, factor3):
-        varianceAnalysis.three_factors_anova(data, param, factor, factor2, factor3)
+        VarianceAnalysis.three_factors_anova(data, param, factor, factor2, factor3)
         return True
 
     @staticmethod
     def wk_anova_test(data, param, factor, factor2, factor3):
-        varianceAnalysis.three_factors_kw_anova(data, param, factor, factor2, factor3)
+        VarianceAnalysis.three_factors_kw_anova(data, param, factor, factor2, factor3)
         print("")
         return True
 

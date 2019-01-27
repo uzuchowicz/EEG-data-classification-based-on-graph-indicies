@@ -5,8 +5,7 @@ from matplotlib import pyplot as plt
 import statsmodels.api as sm
 
 
-
-class distributionAnalysis():
+class DistributionAnalysis:
 
     def test_normality(self, data, use_dagostino=False, modify_to_normality=False):
         alpha = 0.05
