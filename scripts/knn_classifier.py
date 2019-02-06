@@ -41,16 +41,16 @@ class Classifier:
                 result = 0
                 if predicted == label:
                     result = 1
-                result_data.append({'n_neighbors': n_neighbors, 'predicted': predicted, 'label': label, 'result': result,
-                                    'item': counter}, ignore_index=True)
-            k_accuracy.append({'n_neighbors': n_neighbors, 'accuracy': metrics.accuracy_score(result_data['predicted'],
-                                                                                            result_data['label'])}, ignore_index=True)
+                result_data = result_data.append({'n_neighbors': n_neighbors, 'predicted': int(predicted[0]), 'label': int(label), 'result': result, 'item': counter}, ignore_index=True)
+            r_p = result_data['predicted'].to_numpy(dtype=int)
+            r_l = result_data['label'].to_numpy(dtype=int)
+            k_accuracy = k_accuracy.append({'n_neighbors': n_neighbors, 'accuracy': metrics.accuracy_score(r_p,r_l)}, ignore_index=True)
         return result_data, k_accuracy
 
 
     @staticmethod
     def result_visualization(data, result_data, k_accuracy, parameters):
-        ax = sns.lineplot(x="n_neighbors", y="result", hue = "event", style = "event", markers = True, dashes = False, data = result_data)
+        ax = sns.lineplot(x="n_neighbors", y="accuracy", hue = "event", style = "event", markers = True, dashes = False, data = k_accuract)
         plt.show()
         sns.lineplot()
         sns.lineplot(x="n_neighbors", y="predicted", hue="event", style="event", markers=True, dashes=False,
