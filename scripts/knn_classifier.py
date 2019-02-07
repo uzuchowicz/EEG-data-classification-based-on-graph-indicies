@@ -5,7 +5,6 @@ import seaborn as sns
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 import numpy as np
-import matplotlib.pyplot as plt
 
 
 class Classifier:
@@ -13,14 +12,16 @@ class Classifier:
         self.data = None
 
     @staticmethod
-    def sklearn_classification( data_train, data_test, labels, n_neighbors):
+    def skl_knn_classification(data_train, data_test, labels, n_neighbors):
         model = KNeighborsClassifier(n_neighbors)
 
         model.fit(data_train, labels)
-        if len(data_test) == 1:
+        if np.shape(data_test) == (1,):
             data_test = np.array(data_test).reshape(1, 1)
-        else:
+        elif len(np.shape(data_test)) == 1:
             data_test = np.array([data_test])
+        else:
+            data_test = np.array(data_test)
 
         predicted = model.predict(data_test)
         return predicted
@@ -30,7 +31,7 @@ class Classifier:
         if not isinstance(parameters, list):
             parameters = [parameters]
         data_param = data.filter(parameters, axis=1)
-        k_list = [i for i in range(10,20)]
+        k_list = [i for i in range(10,12)]
         group_labels = self.data[group_factor]
         result_data = pd.DataFrame(columns={'n_neighbors', 'predicted', 'label', 'result', 'item'})
         k_accuracy = pd.DataFrame(columns={'n_neighbors', 'accuracy'})
@@ -42,7 +43,7 @@ class Classifier:
                 data_train_labels=group_labels.drop(axis=0, index=counter)
                 data_train = data_param.drop(axis=0, index=counter)
 
-                predicted = Classifier.sklearn_classification(data_train, data_test, data_train_labels, n_neighbors)
+                predicted = Classifier.skl_knn_classification(data_train, data_test, data_train_labels, n_neighbors)
                 result = 0
                 if predicted == label:
                     result = 1
@@ -54,36 +55,37 @@ class Classifier:
                                            ignore_index=True)
         return result_data, k_accuracy
 
-
     @staticmethod
-    def result_visualization(data, result_data, k_accuracy, parameters):
+    def result_visualization(data, result_data, k_accuracy, parameters, group_label):
         plt.figure(0)
         sns.lineplot(x="n_neighbors", y="accuracy",  markers=True, dashes=False, data=k_accuracy)
         plt.show()
-        k_max = k_accuracy["accuracy"].max()
-        best_result_data = result_data[result_data["n_neighbors"] == k_max]
-        h=0.2
+        idx_max, max_accuracy = k_accuracy["accuracy"].idxmax(), k_accuracy["accuracy"].max()
+        best_result = result_data.loc[idx_max]
+        k_max = best_result["n_neighbors"]
+        best_result_data = result_data[result_data['n_neighbors'] == k_max]
+        # h=data.shape[0]//2
+        h = 50
+
         if len(parameters) == 2:
             x_min, x_max = data[parameters[0]].min() - .5, data[parameters[0]].max()
             y_min, y_max = data[parameters[1]].min() - .5, data[parameters[1]].max()
-            xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))
-            # Z = Classifier.predict(np.c_[xx.ravel(), yy.ravel()])
+            xx, yy = np.meshgrid(np.linspace(x_min, x_max, h), np.linspace(y_min, y_max, h))
             best_result_prediction = best_result_data["predicted"].to_numpy(dtype=int)
-            # #
-            # # # Put the result into a color plot
-            best_result_prediction = best_result_prediction.reshape(xx.shape)
+            prediction_grid = Classifier.skl_knn_classification(data.filter(parameters, axis=1), np.c_[xx.ravel(),
+                                                                yy.ravel()], data[group_label], k_max)
+
+            prediction_grid = prediction_grid.reshape(xx.shape)
             plt.figure(1)
             plt.set_cmap(plt.cm.Paired)
-            plt.pcolormesh(xx, yy, best_result_prediction)
-            # #
-            # # # Plot also the training points
-            plt.scatter(data[parameters[0]], data[parameters[1]], c=data['label'])
+            plt.pcolormesh(xx, yy, prediction_grid)
+
+            plt.scatter(data[parameters[0]], data[parameters[1]], c=data[group_label])
             plt.xlabel(parameters[0])
             plt.ylabel(parameters[1])
-            #
+
             plt.xlim(xx.min(), xx.max())
             plt.ylim(yy.min(), yy.max())
             plt.xticks(())
             plt.yticks(())
-        #
             plt.show()
